@@ -1,0 +1,157 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4"></script>
+    <title>OverZone - Профиль</title>
+
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-database-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-analytics-compat.js"></script>
+</head>
+<body class="bg-gray-950 text-white">
+    <header class="bg-gray-900 shadow-lg fixed w-full top-0 z-50">
+        <div class="container mx-auto px-4">
+            <div class="flex justify-between items-center h-16">
+                
+                
+                
+                <a href="Main.html" class="flex items-center">
+                    <img src="/Images/OverZoneLight.png" 
+                        alt="OverZone PC Клуб" 
+                        class="h-10 w-auto hover:opacity-80 transition-opacity">
+                </a>
+
+
+                
+                <nav class="hidden md:flex space-x-8">
+                    <a href="about.html" class="hover:text-blue-400 transition-colors">О клубе</a>
+                    <a href="tariffs.html" class="hover:text-blue-400 transition-colors">Тарифы</a>
+                    <a href="booking.html" class="hover:text-blue-400 transition-colors">Бронирование</a>
+                    <a href="contacts.html" class="hover:text-blue-400 transition-colors">Контакты</a>
+                </nav>
+
+                <div id="auth-buttons">
+                  
+                    <a href="Login.html" id="login-btn" class="bg-blue-600 hover:bg-blue-700 px-4 py-2 rounded-md transition-colors">
+                        Вход
+                    </a>
+                    
+                  
+                    <div id="profile-menu" class="hidden relative">
+                        <button id="profile-btn" class="bg-green-600 hover:bg-green-700 px-4 py-2 rounded-md transition-colors">
+                            Профиль
+                        </button>
+                       
+                        <div id="dropdown-menu" class="absolute right-0 mt-2 w-48 bg-gray-800 rounded-md shadow-lg py-1 hidden">
+                            <span class="block px-4 py-2 text-sm text-gray-300 border-b border-gray-700">
+                                Привет, <span id="user-name"></span>!
+                            </span>
+                            <a href="profile.html" class="block px-4 py-2 text-sm text-white hover:bg-gray-700">
+                                Мой профиль
+                            </a>
+                            <a href="booking.html" class="block px-4 py-2 text-sm text-white hover:bg-gray-700">
+                                Мои бронирования
+                            </a>
+                            <a id="usBalance" class="block px-4 py-2 text-sm text-white ">
+                                Баланс: <span id="user-balance"></span> Руб.
+                            </a>
+                            <button onclick="logout()" class="block w-full text-left px-4 py-2 text-sm text-red-400 hover:bg-gray-700">
+                                Выйти
+                            </button>
+                        </div>
+                </div>
+            </div>
+            </div>
+        </div>
+    </header>
+    <main class="pt-20 pb-10 px-4">
+        <div class="container mx-auto max-w-4xl">
+            <h1 class="text-3xl font-bold text-center mb-8">Мой профиль</h1>
+            
+            <div class="bg-gray-900 border-2 border-gray-700 rounded-lg p-6 shadow-xl">
+                <div class="flex flex-col md:flex-row gap-6">
+                    <div class="flex-shrink-0">
+                        <div class="w-32 h-32 bg-blue-600 rounded-lg flex items-center justify-center border-2 border-blue-400">
+                            <svg class="w-20 h-20 text-white" fill="currentColor" viewBox="0 0 20 20">
+                                <path fill-rule="evenodd" d="M10 9a3 3 0 100-6 3 3 0 000 6zm-7 9a7 7 0 1114 0H3z" clip-rule="evenodd"></path>
+                            </svg>
+                        </div>
+                    </div>
+
+                    <div class="flex-grow">
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-6">
+                            <div class="relative group">
+                                <label class="text-gray-400 text-sm">Имя</label>
+                                <p class="text-white text-lg font-semibold cursor-pointer hover:bg-gray-800 p-2 rounded" 
+                                   onclick="editField('name', this.textContent, 'Введите имя')"
+                                   id="profile-name">Загрузка...</p>
+                                <button class="absolute top-7 right-2 opacity-0 group-hover:opacity-100 transition-opacity text-blue-400 hover:text-blue-300"
+                                        onclick="editField('name', document.getElementById('profile-name').textContent, 'Введите имя')">
+                                    
+                                </button>
+                            </div>
+                            <div class="relative group">
+                                <label class="text-gray-400 text-sm">Фамилия</label>
+                                <p class="text-white text-lg font-semibold cursor-pointer hover:bg-gray-800 p-2 rounded" 
+                                   onclick="editField('surname', this.textContent, 'Введите фамилию')"
+                                   id="profile-surname">Загрузка...</p>
+                                <button class="absolute top-7 right-2 opacity-0 group-hover:opacity-100 transition-opacity text-blue-400 hover:text-blue-300"
+                                        onclick="editField('surname', document.getElementById('profile-surname').textContent, 'Введите фамилию')">
+                                    
+                                </button>
+                            </div>
+                            <div>
+                                <label class="text-gray-400 text-sm">Логин</label>
+                                <p class="text-white text-lg font-semibold" id="profile-login">Загрузка...</p>
+                            </div>
+                            <div>
+                                <label class="text-gray-400 text-sm">Email</label>
+                                <p class="text-white text-lg font-semibold" id="profile-email">Загрузка...</p>
+                            </div>
+                            <div class="relative group">
+                                <label class="text-gray-400 text-sm">Дата рождения</label>
+                                <p class="text-white text-lg font-semibold cursor-pointer hover:bg-gray-800 p-2 rounded" 
+                                   onclick="editField('date', this.textContent, 'Введите дату рождения (ГГГГ-ММ-ДД)')"
+                                   id="profile-date">Загрузка...</p>
+                                <button class="absolute top-7 right-2 opacity-0 group-hover:opacity-100 transition-opacity text-blue-400 hover:text-blue-300"
+                                        onclick="editField('date', document.getElementById('profile-date').textContent, 'Введите дату рождения (ГГГГ-ММ-ДД)')">
+                                    
+                                </button>
+                            </div>
+                            <div>
+                                <label class="text-gray-400 text-sm">Роль</label>
+                                <p class="text-white text-lg font-semibold" id="profile-role">Загрузка...</p>
+                            </div>
+                        </div>
+                       
+                        <div class="mb-6">
+                            <label class="text-gray-400 text-sm">Баланс</label>
+                            <p class="text-green-400 text-2xl font-bold" id="profile-balance">0.00 Руб.</p>
+                        </div>
+                        
+                        <div class="border-t border-gray-700 pt-4">
+                            <h3 class="text-lg font-semibold mb-3">Безопасность</h3>
+                            <div class="flex items-center justify-between">
+                                <div>
+                                    <label class="text-gray-400 text-sm">Пароль</label>
+                                    <p class="text-white">••••••••</p>
+                                </div>
+                                <button onclick="changePassword()" class="bg-blue-600 hover:bg-blue-700 px-4 py-2 rounded-md transition-colors">
+                                    Сменить пароль
+                                </button>
+                            </div>
+                        </div>
+                        
+                    </div>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    
+<script src="/Scripts/Profile.js"></script>
+</body>
+</html>

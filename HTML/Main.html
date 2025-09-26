@@ -1,0 +1,329 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4"></script>
+    <title>OverZone - Главная</title>
+
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-database-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-analytics-compat.js"></script>
+</head>
+<body class="bg-gray-950 text-white">
+    
+    <header class="bg-gray-900 shadow-lg fixed w-full top-0 z-50">
+        <div class="container mx-auto px-4">
+            <div class="flex justify-between items-center h-16">
+                
+                
+                
+                <a href="Main.html" class="flex items-center">
+                    <img src="/Images/OverZoneLight.png" 
+                        alt="OverZone PC Клуб" 
+                        class="h-10 w-auto hover:opacity-80 transition-opacity">
+                </a>
+
+
+                
+                <nav class="hidden md:flex space-x-8">
+                    <a href="about.html" class="hover:text-blue-400 transition-colors">О клубе</a>
+                    <a href="tariffs.html" class="hover:text-blue-400 transition-colors">Тарифы</a>
+                    <a href="booking.html" class="hover:text-blue-400 transition-colors">Бронирование</a>
+                    <a href="contacts.html" class="hover:text-blue-400 transition-colors">Контакты</a>
+                </nav>
+
+                <div id="auth-buttons">
+                    
+                    <a href="Login.html" id="login-btn" class="bg-blue-600 hover:bg-blue-700 px-4 py-2 rounded-md transition-colors">
+                        Вход
+                    </a>
+                    
+                    
+                    <div id="profile-menu" class="hidden relative">
+                        <button id="profile-btn" class="bg-green-600 hover:bg-green-700 px-4 py-2 rounded-md transition-colors">
+                            Профиль
+                        </button>
+                        
+                        <div id="dropdown-menu" class="absolute right-0 mt-2 w-48 bg-gray-800 rounded-md shadow-lg py-1 hidden">
+                            <span class="block px-4 py-2 text-sm text-gray-300 border-b border-gray-700">
+                                Привет, <span id="user-name"></span>!
+                            </span>
+                            <a href="profile.html" class="block px-4 py-2 text-sm text-white hover:bg-gray-700">
+                                Мой профиль
+                            </a>
+                            <a href="booking.html" class="block px-4 py-2 text-sm text-white hover:bg-gray-700">
+                                Мои бронирования
+                            </a>
+                            <a id="usBalance" class="block px-4 py-2 text-sm text-white ">
+                                Баланс: <span id="user-balance"></span> Руб.
+                            </a>
+                            <button onclick="logout()" class="block w-full text-left px-4 py-2 text-sm text-red-400 hover:bg-gray-700">
+                                Выйти
+                            </button>
+                        </div>
+                </div>
+            </div>
+            </div>
+        </div>
+    </header>
+
+    <main class="pt-16">
+        <div class="container mx-auto p-4">
+            <h1 class="text-3xl font-bold"></h1>
+            
+            
+        <section class="relative bg-gradient-to-r from-blue-900 to-purple-900 py-20">
+            <div class="container mx-auto px-4 text-center">
+                <h1 class="text-5xl md:text-6xl font-bold mb-6">OverZone PC</h1>
+                <p class="text-xl md:text-2xl text-gray-300 mb-8">Лучший игровой клуб с современным оборудованием</p>
+                <div class="flex flex-col sm:flex-row gap-4 justify-center">
+                    <a href="booking.html" class="bg-blue-600 hover:bg-blue-700 px-8 py-3 rounded-lg text-lg font-semibold transition-colors">
+                        Забронировать сейчас
+                    </a>
+                    <a href="tariffs.html" class="bg-gray-700 hover:bg-gray-600 px-8 py-3 rounded-lg text-lg font-semibold transition-colors">
+                        Посмотреть тарифы
+                    </a>
+                </div>
+            </div>
+        </section>
+
+        
+        <section class="py-16 bg-gray-900">
+            <div class="container mx-auto px-4">
+                <h2 class="text-3xl font-bold text-center mb-12">Почему выбирают нас?</h2>
+                <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
+                    <div class="text-center p-6 bg-gray-800 rounded-lg">
+                        <div class="w-16 h-16 bg-blue-600 rounded-full flex items-center justify-center mx-auto mb-4">
+                            <svg class="w-8 h-8 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 3v2m6-2v2M9 19v2m6-2v2M5 9H3m2 6H3m18-6h-2m2 6h-2M7 19h10a2 2 0 002-2V7a2 2 0 00-2-2H7a2 2 0 00-2 2v10a2 2 0 002 2z"></path>
+                            </svg>
+                        </div>
+                        <h3 class="text-xl font-semibold mb-3">Мощные компьютеры</h3>
+                        <p class="text-gray-300">RTX 4090, Intel i9, 32GB RAM - идеальная производительность для любых игр</p>
+                    </div>
+                    
+                    <div class="text-center p-6 bg-gray-800 rounded-lg">
+                        <div class="w-16 h-16 bg-green-600 rounded-full flex items-center justify-center mx-auto mb-4">
+                            <svg class="w-8 h-8 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+                            </svg>
+                        </div>
+                        <h3 class="text-xl font-semibold mb-3">Круглосуточно</h3>
+                        <p class="text-gray-300">Работаем 24/7 - играйте в любое удобное время</p>
+                    </div>
+                    
+                    <div class="text-center p-6 bg-gray-800 rounded-lg">
+                        <div class="w-16 h-16 bg-purple-600 rounded-full flex items-center justify-center mx-auto mb-4">
+                            <svg class="w-8 h-8 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z"></path>
+                            </svg>
+                        </div>
+                        <h3 class="text-xl font-semibold mb-3">Комфортная атмосфера</h3>
+                        <p class="text-gray-300">Удобные кресла, профессиональные мониторы и отличное сообщество</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+    
+        <section class="py-16">
+            <div class="container mx-auto px-4">
+                <h2 class="text-3xl font-bold text-center mb-12">Популярные игры</h2>
+                <div class="grid grid-cols-2 md:grid-cols-4 gap-6">
+                    <div class="bg-gray-800 rounded-lg p-4 text-center hover:bg-gray-700 transition-colors">
+                        <div class="w-16 h-16 bg-red-600 rounded-full mx-auto mb-3 flex items-center justify-center">
+                            <span class="text-white font-bold">CS2</span>
+                        </div>
+                        <h3 class="font-semibold">Counter-Strike 2</h3>
+                    </div>
+                    
+                    <div class="bg-gray-800 rounded-lg p-4 text-center hover:bg-gray-700 transition-colors">
+                        <div class="w-16 h-16 bg-blue-600 rounded-full mx-auto mb-3 flex items-center justify-center">
+                            <span class="text-white font-bold">VAL</span>
+                        </div>
+                        <h3 class="font-semibold">Valorant</h3>
+                    </div>
+                    
+                    <div class="bg-gray-800 rounded-lg p-4 text-center hover:bg-gray-700 transition-colors">
+                        <div class="w-16 h-16 bg-green-600 rounded-full mx-auto mb-3 flex items-center justify-center">
+                            <span class="text-white font-bold">DOTA</span>
+                        </div>
+                        <h3 class="font-semibold">Dota 2</h3>
+                    </div>
+                    
+                    <div class="bg-gray-800 rounded-lg p-4 text-center hover:bg-gray-700 transition-colors">
+                        <div class="w-16 h-16 bg-purple-600 rounded-full mx-auto mb-3 flex items-center justify-center">
+                            <span class="text-white font-bold">PUBG</span>
+                        </div>
+                        <h3 class="font-semibold">PUBG</h3>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        
+        <section class="py-16 bg-gray-900">
+            <div class="container mx-auto px-4">
+                <h2 class="text-3xl font-bold text-center mb-12">Акции и события</h2>
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
+                    <div class="bg-gradient-to-r from-blue-600 to-purple-600 rounded-lg p-6">
+                        <h3 class="text-xl font-semibold mb-3">🎯 Скидка 20% новичкам</h3>
+                        <p class="text-gray-200">Первые 3 часа игры со скидкой 20% для новых клиентов</p>
+                    </div>
+                    
+                    <div class="bg-gradient-to-r from-green-600 to-blue-600 rounded-lg p-6">
+                        <h3 class="text-xl font-semibold mb-3">🏆 Турниры каждую неделю</h3>
+                        <p class="text-gray-200">Участвуйте в еженедельных турнирах с призовым фондом</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        
+        <section class="py-16">
+            <div class="container mx-auto px-4">
+                <h2 class="text-3xl font-bold text-center mb-12">Что говорят наши гости</h2>
+                <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
+                    <div class="bg-gray-800 p-6 rounded-lg">
+                        <div class="flex items-center mb-4">
+                            <div class="w-12 h-12 bg-blue-600 rounded-full flex items-center justify-center mr-4">
+                                <span class="text-white font-bold">А</span>
+                            </div>
+                            <div>
+                                <h4 class="font-semibold">Алексей</h4>
+                                <p class="text-gray-400">Постоянный клиент</p>
+                            </div>
+                        </div>
+                        <p class="text-gray-300">"Лучшие компьютеры в городе! FPS всегда стабильный, задержек нет."</p>
+                    </div>
+                    
+                    <div class="bg-gray-800 p-6 rounded-lg">
+                        <div class="flex items-center mb-4">
+                            <div class="w-12 h-12 bg-green-600 rounded-full flex items-center justify-center mr-4">
+                                <span class="text-white font-bold">М</span>
+                            </div>
+                            <div>
+                                <h4 class="font-semibold">Мария</h4>
+                                <p class="text-gray-400">Новый клиент</p>
+                            </div>
+                        </div>
+                        <p class="text-gray-300">"Очень чисто и уютно. Персонал всегда помогает и подсказывает."</p>
+                    </div>
+                    
+                    <div class="bg-gray-800 p-6 rounded-lg">
+                        <div class="flex items-center mb-4">
+                            <div class="w-12 h-12 bg-purple-600 rounded-full flex items-center justify-center mr-4">
+                                <span class="text-white font-bold">Д</span>
+                            </div>
+                            <div>
+                                <h4 class="font-semibold">Дмитрий</h4>
+                                <p class="text-gray-400">Профессиональный игрок</p>
+                            </div>
+                        </div>
+                        <p class="text-gray-300">"Идеальное место для тренировок."</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        
+        <section class="py-20 bg-gradient-to-r from-purple-900 to-blue-900">
+            <div class="container mx-auto px-4 text-center">
+                <h2 class="text-4xl font-bold mb-6">Готовы начать играть?</h2>
+                <p class="text-xl text-gray-300 mb-8">Присоединяйтесь к нашему сообществу геймеров</p>
+                <a href="booking.html" class="bg-white text-blue-600 px-8 py-4 rounded-lg text-lg font-semibold hover:bg-gray-100 transition-colors">
+                    Забронировать место сейчас
+                </a>
+            </div>
+        </section>
+
+        </div>
+    </main>
+
+    
+
+<footer class="bg-gray-800 text-white py-12">
+    <div class="container mx-auto px-4">
+        
+        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-8 mb-8">
+            <div>
+                <h3 class="font-semibold text-lg mb-4">О клубе</h3>
+                <ul class="space-y-2">
+                    <li><a class="text-gray-300 hover:text-white transition-colors">Наша история</a></li>
+                    <li><a class="text-gray-300 hover:text-white transition-colors">Оборудование</a></li>
+                    <li><a class="text-gray-300 hover:text-white transition-colors">Фото зала</a></li>
+                    <li><a class="text-gray-300 hover:text-white transition-colors">Правила</a></li>
+                </ul>
+            </div>
+            
+            <div>
+                <h3 class="font-semibold text-lg mb-4">Тарифы</h3>
+                <ul class="space-y-2">
+                    <li><a class="text-gray-300 hover:text-white transition-colors">Часовые тарифы</a></li>
+                    <li><a class="text-gray-300 hover:text-white transition-colors">Абонементы</a></li>
+                    <li><a class="text-gray-300 hover:text-white transition-colors">VIP-зона</a></li>
+                    <li><a class="text-gray-300 hover:text-white transition-colors">Доп. услуги</a></li>
+                </ul>
+            </div>
+            
+            <div>
+                <h3 class="font-semibold text-lg mb-4">Бронирование</h3>
+                <ul class="space-y-2">
+                    <li><a class="text-gray-300 hover:text-white transition-colors">Выбор зоны</a></li>
+                    <li><a class="text-gray-300 hover:text-white transition-colors">Календарь</a></li>
+                    <li><a class="text-gray-300 hover:text-white transition-colors">Акции</a></li>
+                    <li><a class="text-gray-300 hover:text-white transition-colors">Подарочные карты</a></li>
+                </ul>
+            </div>
+            
+            <div>
+                <h3 class="font-semibold text-lg mb-4">Контакты</h3>
+                <ul class="space-y-2">
+                    <li><a class="text-gray-300 hover:text-white transition-colors">Адрес клуба</a></li>
+                    <li><a class="text-gray-300 hover:text-white transition-colors">FAQ</a></li>
+                </ul>
+            </div>
+            
+            <div>
+                <h3 class="font-semibold text-lg mb-4">Свяжитесь с нами</h3>
+                <div class="space-y-3">
+                    <div>
+                        <p class="text-gray-300">Телефон:</p>
+                        <a href="tel:+78005553535" class="text-white hover:text-blue-300 transition-colors font-medium">
+                            +7 (800) 555-35-35
+                        </a>
+                    </div>
+                    <div>
+                        <p class="text-gray-300">Email:</p>
+                        <a href="mailto:info@overzone.ru" class="text-white hover:text-blue-300 transition-colors font-medium">
+                            info@overzone.ru
+                        </a>
+                    </div>
+                    <div>
+                        <p class="text-gray-300">Часы работы:</p>
+                        <p class="text-white font-medium">Круглосуточно</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <div class="border-t border-gray-700 pt-8">
+            <div class="flex flex-col md:flex-row justify-between items-center">
+                <p class="text-gray-400 text-sm mb-4 md:mb-0">
+                    © 2024 OverZone PC Клуб. Все права защищены.
+                </p>
+                <div class="flex space-x-6">
+                    <a href="#" class="text-gray-400 hover:text-white transition-colors text-sm">Конфиденциальность</a>
+                    <a href="#" class="text-gray-400 hover:text-white transition-colors text-sm">Условия использования</a>
+                    <a href="#" class="text-gray-400 hover:text-white transition-colors text-sm">Правовая информация</a>
+                </div>
+            </div>
+        </div>
+    </div>
+</footer>
+
+<script src="/Scripts/Main.js"></script>
+</body>
+</html>
