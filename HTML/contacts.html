@@ -1,0 +1,261 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4"></script>
+    <title>Контакты - OverZone PC | Игровой клуб | ПК клуб</title>
+    <meta name="description" content="Контакты игрового клуба OverZone PC. Адрес, телефон, email и часы работы нашего компьютерного клуба.">
+    <meta name="keywords" content="контакты игрового клуба, адрес пк клуба, телефон компьютерного клуба, как добраться">
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-database-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-analytics-compat.js"></script>
+</head>
+<body class="bg-gray-950 text-white">
+    <header class="bg-gray-900 shadow-lg fixed w-full top-0 z-50">
+        <div class="container mx-auto px-4">
+            <div class="flex justify-between items-center h-16">
+                <a href="Main.html" class="flex items-center">
+                    <img src="/Images/OverZoneLight.png" 
+                        alt="OverZone PC Клуб" 
+                        class="h-10 w-auto hover:opacity-80 transition-opacity">
+                </a>
+
+                <nav class="hidden md:flex space-x-8">
+                    <a href="about.html" class="hover:text-blue-400 transition-colors">О клубе</a>
+                    <a href="tariffs.html" class="hover:text-blue-400 transition-colors">Тарифы</a>
+                    <a href="booking.html" class="hover:text-blue-400 transition-colors">Бронирование</a>
+                    <a href="contacts.html" class="hover:text-blue-400 transition-colors">Контакты</a>
+                </nav>
+
+                <div id="auth-buttons">
+                    <a href="Login.html" id="login-btn" class="bg-blue-600 hover:bg-blue-700 px-4 py-2 rounded-md transition-colors">
+                        Вход
+                    </a>
+                    
+                    <div id="profile-menu" class="hidden relative">
+                        <button id="profile-btn" class="bg-green-600 hover:bg-green-700 px-4 py-2 rounded-md transition-colors">
+                            Профиль
+                        </button>
+                       
+                        <div id="dropdown-menu" class="absolute right-0 mt-2 w-48 bg-gray-800 rounded-md shadow-lg py-1 hidden">
+                            <span class="block px-4 py-2 text-sm text-gray-300 border-b border-gray-700">
+                                Привет, <span id="user-name"></span>!
+                            </span>
+                            <a href="profile.html" class="block px-4 py-2 text-sm text-white hover:bg-gray-700">
+                                Мой профиль
+                            </a>
+                            <a href="booking.html" class="block px-4 py-2 text-sm text-white hover:bg-gray-700">
+                                Мои бронирования
+                            </a>
+                            <a id="usBalance" class="block px-4 py-2 text-sm text-white ">
+                                Баланс: <span id="user-balance"></span> Руб.
+                            </a>
+                            <button onclick="logout()" class="block w-full text-left px-4 py-2 text-sm text-red-400 hover:bg-gray-700">
+                                Выйти
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <main class="pt-20 pb-10">
+        <!-- Hero Section -->
+        <section class="relative bg-gradient-to-r from-blue-900 to-purple-900 py-20">
+            <div class="container mx-auto px-4 text-center">
+                <h1 class="text-5xl md:text-6xl font-bold mb-6">Контакты</h1>
+                <p class="text-xl md:text-2xl text-gray-300 mb-8">Свяжитесь с нами любым удобным способом</p>
+            </div>
+        </section>
+
+        <!-- Contact Info Section -->
+        <section class="py-16">
+            <div class="container mx-auto px-4">
+                <div class="grid grid-cols-1 lg:grid-cols-2 gap-12">
+                    <!-- Contact Details -->
+                    <div>
+                        <h2 class="text-3xl font-bold mb-8">Контактная информация</h2>
+                        
+                        <div class="space-y-6">
+                            <div class="flex items-start">
+                                <div class="w-12 h-12 bg-blue-600 rounded-full flex items-center justify-center mr-4 flex-shrink-0">
+                                    <svg class="w-6 h-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z"></path>
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 11a3 3 0 11-6 0 3 3 0 016 0z"></path>
+                                    </svg>
+                                </div>
+                                <div>
+                                    <h3 class="text-xl font-semibold mb-2">Адрес</h3>
+                                    <p class="text-gray-300">г. Новосибирск, ул. Красный проспект, д. 72</p>
+                                </div>
+                            </div>
+                            
+                            <div class="flex items-start">
+                                <div class="w-12 h-12 bg-green-600 rounded-full flex items-center justify-center mr-4 flex-shrink-0">
+                                    <svg class="w-6 h-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 5a2 2 0 012-2h3.28a1 1 0 01.948.684l1.498 4.493a1 1 0 01-.502 1.21l-2.257 1.13a11.042 11.042 0 005.516 5.516l1.13-2.257a1 1 0 011.21-.502l4.493 1.498a1 1 0 01.684.949V19a2 2 0 01-2 2h-1C9.716 21 3 14.284 3 6V5z"></path>
+                                    </svg>
+                                </div>
+                                <div>
+                                    <h3 class="text-xl font-semibold mb-2">Телефон</h3>
+                                    <a href="tel:+78005553535" class="text-white hover:text-blue-300 transition-colors text-lg">
+                                        +7 (800) 555-35-35
+                                    </a>
+                                </div>
+                            </div>
+                            
+                            <div class="flex items-start">
+                                <div class="w-12 h-12 bg-purple-600 rounded-full flex items-center justify-center mr-4 flex-shrink-0">
+                                    <svg class="w-6 h-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"></path>
+                                    </svg>
+                                </div>
+                                <div>
+                                    <h3 class="text-xl font-semibold mb-2">Email</h3>
+                                    <a href="mailto:info@overzone.ru" class="text-white hover:text-blue-300 transition-colors text-lg">
+                                        info@overzone.ru
+                                    </a>
+                                </div>
+                            </div>
+                            
+                            <div class="flex items-start">
+                                <div class="w-12 h-12 bg-yellow-600 rounded-full flex items-center justify-center mr-4 flex-shrink-0">
+                                    <svg class="w-6 h-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+                                    </svg>
+                                </div>
+                                <div>
+                                    <h3 class="text-xl font-semibold mb-2">Часы работы</h3>
+                                    <p class="text-gray-300 text-lg">Круглосуточно, 7 дней в неделю</p>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="mt-8 bg-gray-800 p-6 rounded-lg">
+                            <h3 class="text-xl font-semibold mb-4">Как добраться</h3>
+                            <p class="text-gray-300 mb-4">
+                                Рядом со станцией метро Красный проспект
+                            </p>
+                            <p class="text-gray-300">
+                                Рядом есть большая парковка
+                            </p>
+                        </div>
+                    </div>
+                    
+                    <!-- Map Placeholder -->
+                    <div class="bg-gray-800 rounded-lg p-6 h-96 flex items-center justify-center">
+                        <div class="text-center">
+                            <svg class="w-16 h-16 text-gray-400 mx-auto mb-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 20l-5.447-2.724A1 1 0 013 16.382V5.618a1 1 0 011.447-.894L9 7m0 13l6-3m-6 3V7m6 10l4.553 2.276A1 1 0 0021 18.382V7.618a1 1 0 00-.553-.894L15 4m0 13V4m0 0L9 7"></path>
+                            </svg>
+                            <p class="text-gray-400">Здесь будет карта с нашим местоположением</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- FAQ Section -->
+        <section class="py-16 bg-gray-900">
+            <div class="container mx-auto px-4">
+                <h2 class="text-3xl font-bold text-center mb-12">Часто задаваемые вопросы</h2>
+                
+                <div class="max-w-3xl mx-auto space-y-6">
+                    <div class="bg-gray-800 p-6 rounded-lg">
+                        <h3 class="text-xl font-semibold mb-3">Нужна ли предварительная запись?</h3>
+                        <p class="text-gray-300">
+                            Предварительная запись не обязательна, но рекомендуется, особенно в вечернее время и выходные дни, 
+                            чтобы гарантировать наличие свободного места.
+                        </p>
+                    </div>
+                    
+                    <div class="bg-gray-800 p-6 rounded-lg">
+                        <h3 class="text-xl font-semibold mb-3">Есть ли возрастные ограничения?</h3>
+                        <p class="text-gray-300">
+                            Посещение клуба разрешено с 14 лет. Для посетителей младше 18 лет требуется письменное согласие родителей.
+                        </p>
+                    </div>
+                    
+                    <div class="bg-gray-800 p-6 rounded-lg">
+                        <h3 class="text-xl font-semibold mb-3">Можно ли приходить со своей периферией?</h3>
+                        <p class="text-gray-300">
+                            Да, вы можете приносить свою клавиатуру, мышь, наушники и другие аксессуары. 
+                            Наши администраторы помогут подключить оборудование.
+                        </p>
+                    </div>
+                    
+                    <div class="bg-gray-800 p-6 rounded-lg">
+                        <h3 class="text-xl font-semibold mb-3">Есть ли в клубе еда и напитки?</h3>
+                        <p class="text-gray-300">
+                            В клубе работает мини-бар с напитками и снеками. Также вы можете заказать доставку еды из ресторанов-партнеров.
+                        </p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- CTA Section -->
+        <section class="py-20 bg-gradient-to-r from-purple-900 to-blue-900">
+            <div class="container mx-auto px-4 text-center">
+                <h2 class="text-4xl font-bold mb-6">Остались вопросы?</h2>
+                <p class="text-xl text-gray-300 mb-8">Свяжитесь с нами, и мы с радостью на них ответим</p>
+                <div class="flex flex-col sm:flex-row gap-4 justify-center">
+                    <a href="tel:+78005553535" class="bg-white text-blue-600 px-8 py-4 rounded-lg text-lg font-semibold hover:bg-gray-100 transition-colors">
+                        Позвонить нам
+                    </a>
+                    <a href="booking.html" class="bg-blue-600 hover:bg-blue-700 px-8 py-4 rounded-lg text-lg font-semibold transition-colors">
+                        Забронировать место
+                    </a>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <footer class="bg-gray-800 text-white py-12">
+        <div class="container mx-auto px-4">
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-8 mb-8">
+                <div>
+                    <h3 class="font-semibold text-lg mb-4">О клубе</h3>
+                    <ul class="space-y-2">
+                        <li><a href="about.html" class="text-gray-300 hover:text-white transition-colors">Наша история</a></li>
+                        <li><a class="text-gray-300 hover:text-white transition-colors">Оборудование</a></li>
+                        <li><a class="text-gray-300 hover:text-white transition-colors">Фото зала</a></li>
+                        <li><a class="text-gray-300 hover:text-white transition-colors">Правила</a></li>
+                    </ul>
+                </div>
+                
+                <div>
+                    <h3 class="font-semibold text-lg mb-4">Тарифы</h3>
+                    <ul class="space-y-2">
+                        <li><a href="tariffs.html" class="text-gray-300 hover:text-white transition-colors">Часовые тарифы</a></li>
+                        <li><a href="tariffs.html" class="text-gray-300 hover:text-white transition-colors">Абонементы</a></li>
+                        <li><a class="text-gray-300 hover:text-white transition-colors">VIP-зона</a></li>
+                        <li><a class="text-gray-300 hover:text-white transition-colors">Доп. услуги</a></li>
+                    </ul>
+                </div>
+                
+                <div>
+                    <h3 class="font-semibold text-lg mb-4">Бронирование</h3>
+                    <ul class="space-y-2">
+                        <li><a href="booking.html" class="text-gray-300 hover:text-white transition-colors">Выбор зоны</a></li>
+                        <li><a href="booking.html" class="text-gray-300 hover:text-white transition-colors">Календарь</a></li>
+                        <li><a class="text-gray-300 hover:text-white transition-colors">Акции</a></li>
+                        <li><a class="text-gray-300 hover:text-white transition-colors">Подарочные карты</a></li>
+                    </ul>
+                </div>
+                
+                <div>
+                    <h3 class="font-semibold text-lg mb-4">Контакты</h3>
+                    <ul class="space-y-2">
+                        <li><a href="contacts.html" class="text-gray-300 hover:text-white transition-colors">Адрес клуба</a></li>
+                        <li><a class="text-gray-300 hover:text-white transition-colors">FAQ</a></li>
+                    </ul>
+                </div>
+                
+                <div>
+                    <h3 class="font-semibold text-lg mb-4">Свяжитесь с нами</h3>
+                    <div class="space-y-3">
+                        <
