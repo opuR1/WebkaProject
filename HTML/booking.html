@@ -1,0 +1,281 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4"></script>
+    <title>Бронирование - OverZone PC | Игровой клуб | ПК клуб</title>
+    <meta name="description" content="Бронирование мест в игровом клубе OverZone PC. Выберите зону, дату и время для игры в нашем компьютерном клубе.">
+    <meta name="keywords" content="бронирование игрового клуба, забронировать пк, компьютерный клуб онлайн запись">
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-database-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-analytics-compat.js"></script>
+</head>
+<body class="bg-gray-950 text-white">
+    <header class="bg-gray-900 shadow-lg fixed w-full top-0 z-50">
+        <div class="container mx-auto px-4">
+            <div class="flex justify-between items-center h-16">
+                <a href="Main.html" class="flex items-center">
+                    <img src="/Images/OverZoneLight.png" 
+                        alt="OverZone PC Клуб" 
+                        class="h-10 w-auto hover:opacity-80 transition-opacity">
+                </a>
+
+                <nav class="hidden md:flex space-x-8">
+                    <a href="about.html" class="hover:text-blue-400 transition-colors">О клубе</a>
+                    <a href="tariffs.html" class="hover:text-blue-400 transition-colors">Тарифы</a>
+                    <a href="booking.html" class="hover:text-blue-400 transition-colors">Бронирование</a>
+                    <a href="contacts.html" class="hover:text-blue-400 transition-colors">Контакты</a>
+                </nav>
+
+                <div id="auth-buttons">
+                    <a href="Login.html" id="login-btn" class="bg-blue-600 hover:bg-blue-700 px-4 py-2 rounded-md transition-colors">
+                        Вход
+                    </a>
+                    
+                    <div id="profile-menu" class="hidden relative">
+                        <button id="profile-btn" class="bg-green-600 hover:bg-green-700 px-4 py-2 rounded-md transition-colors">
+                            Профиль
+                        </button>
+                       
+                        <div id="dropdown-menu" class="absolute right-0 mt-2 w-48 bg-gray-800 rounded-md shadow-lg py-1 hidden">
+                            <span class="block px-4 py-2 text-sm text-gray-300 border-b border-gray-700">
+                                Привет, <span id="user-name"></span>!
+                            </span>
+                            <a href="profile.html" class="block px-4 py-2 text-sm text-white hover:bg-gray-700">
+                                Мой профиль
+                            </a>
+                            <a href="booking.html" class="block px-4 py-2 text-sm text-white hover:bg-gray-700">
+                                Мои бронирования
+                            </a>
+                            <a id="usBalance" class="block px-4 py-2 text-sm text-white ">
+                                Баланс: <span id="user-balance"></span> Руб.
+                            </a>
+                            <button onclick="logout()" class="block w-full text-left px-4 py-2 text-sm text-red-400 hover:bg-gray-700">
+                                Выйти
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <main class="pt-20 pb-10">
+        
+        <section class="relative bg-gradient-to-r from-blue-900 to-purple-900 py-20">
+            <div class="container mx-auto px-4 text-center">
+                <h1 class="text-5xl md:text-6xl font-bold mb-6">Бронирование</h1>
+                <p class="text-xl md:text-2xl text-gray-300 mb-8">Выберите зону, дату и время для игры</p>
+            </div>
+        </section>
+
+        
+        <section class="py-16">
+            <div class="container mx-auto px-4">
+                
+                <div class="flex justify-center mb-12">
+                    <div class="flex items-center">
+                        <div class="flex flex-col items-center">
+                            <div id="step-1" class="w-10 h-10 rounded-full bg-blue-600 flex items-center justify-center text-white font-bold">1</div>
+                            <span class="mt-2 text-sm">Выбор зоны</span>
+                        </div>
+                        <div class="w-16 h-1 bg-gray-700 mx-2"></div>
+                        <div class="flex flex-col items-center">
+                            <div id="step-2" class="w-10 h-10 rounded-full bg-gray-700 flex items-center justify-center text-white font-bold">2</div>
+                            <span class="mt-2 text-sm">Выбор времени</span>
+                        </div>
+                        <div class="w-16 h-1 bg-gray-700 mx-2"></div>
+                        <div class="flex flex-col items-center">
+                            <div id="step-3" class="w-10 h-10 rounded-full bg-gray-700 flex items-center justify-center text-white font-bold">3</div>
+                            <span class="mt-2 text-sm">Подтверждение</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Выбор зоны -->
+                <div id="step1-content" class="bg-gray-900 rounded-lg p-6 mb-8">
+                    <h2 class="text-2xl font-bold mb-6">Выберите зону</h2>
+                    <div id="zones-container" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                        <!-- данные из фб -->
+                    </div>
+                    <div class="mt-6 flex justify-end">
+                        <button id="next-to-step2" class="bg-blue-600 hover:bg-blue-700 px-6 py-3 rounded-lg font-semibold transition-colors">
+                            Далее: Выбор времени
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Выбор времени -->
+                <div id="step2-content" class="bg-gray-900 rounded-lg p-6 mb-8 hidden">
+                    <h2 class="text-2xl font-bold mb-6">Выберите дату и время</h2>
+                    
+                    <!-- Дата -->
+                    <div class="mb-6">
+                        <h3 class="text-xl font-semibold mb-4">Дата</h3>
+                        <div id="date-selector" class="flex space-x-4 overflow-x-auto pb-4">
+                            <!-- генерация дат -->
+                        </div>
+                    </div>
+                    
+                    <!-- Временные слоты -->
+                    <div>
+                        <h3 class="text-xl font-semibold mb-4">Время</h3>
+                        <div id="time-slots-container" class="grid grid-cols-4 md:grid-cols-6 lg:grid-cols-8 gap-3">
+                            <!-- Загрузка слотов времени -->
+                        </div>
+                    </div>
+                    
+                    <div class="mt-6 flex justify-between">
+                        <button id="back-to-step1" class="bg-gray-700 hover:bg-gray-600 px-6 py-3 rounded-lg font-semibold transition-colors">
+                            Назад
+                        </button>
+                        <button id="next-to-step3" class="bg-blue-600 hover:bg-blue-700 px-6 py-3 rounded-lg font-semibold transition-colors">
+                            Далее: Подтверждение
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Подтверждение -->
+                <div id="step3-content" class="bg-gray-900 rounded-lg p-6 hidden">
+                    <h2 class="text-2xl font-bold mb-6">Подтверждение бронирования</h2>
+                    
+                    <div class="bg-gray-800 rounded-lg p-6 mb-6">
+                        <h3 class="text-xl font-semibold mb-4">Детали бронирования</h3>
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                            <div>
+                                <p class="text-gray-400">Зона:</p>
+                                <p id="confirm-zone" class="text-white font-semibold">-</p>
+                            </div>
+                            <div>
+                                <p class="text-gray-400">Дата:</p>
+                                <p id="confirm-date" class="text-white font-semibold">-</p>
+                            </div>
+                            <div>
+                                <p class="text-gray-400">Время:</p>
+                                <p id="confirm-time" class="text-white font-semibold">-</p>
+                            </div>
+                            <div>
+                                <p class="text-gray-400">Стоимость:</p>
+                                <p id="confirm-price" class="text-white font-semibold">-</p>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="flex justify-between">
+                        <button id="back-to-step2" class="bg-gray-700 hover:bg-gray-600 px-6 py-3 rounded-lg font-semibold transition-colors">
+                            Назад
+                        </button>
+                        <button id="confirm-booking" class="bg-green-600 hover:bg-green-700 px-6 py-3 rounded-lg font-semibold transition-colors">
+                            Подтвердить бронирование
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        
+        <section id="user-bookings-section" class="py-16 bg-gray-900 hidden">
+            <div class="container mx-auto px-4">
+                <h2 class="text-3xl font-bold text-center mb-12">Мои бронирования</h2>
+                <div id="bookings-container" class="grid grid-cols-1 gap-6">
+                    
+                </div>
+            </div>
+        </section>
+
+        
+        <section class="py-20 bg-gradient-to-r from-purple-900 to-blue-900">
+            <div class="container mx-auto px-4 text-center">
+                <h2 class="text-4xl font-bold mb-6">Остались вопросы?</h2>
+                <p class="text-xl text-gray-300 mb-8">Свяжитесь с нами для получения помощи</p>
+                <a href="contacts.html" class="bg-white text-blue-600 px-8 py-4 rounded-lg text-lg font-semibold hover:bg-gray-100 transition-colors">
+                    Связаться с нами
+                </a>
+            </div>
+        </section>
+    </main>
+
+    <footer class="bg-gray-800 text-white py-12">
+        <div class="container mx-auto px-4">
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-8 mb-8">
+                <div>
+                    <h3 class="font-semibold text-lg mb-4">О клубе</h3>
+                    <ul class="space-y-2">
+                        <li><a href="about.html" class="text-gray-300 hover:text-white transition-colors">Наша история</a></li>
+                        <li><a class="text-gray-300 hover:text-white transition-colors">Оборудование</a></li>
+                        <li><a class="text-gray-300 hover:text-white transition-colors">Фото зала</a></li>
+                        <li><a class="text-gray-300 hover:text-white transition-colors">Правила</a></li>
+                    </ul>
+                </div>
+                
+                <div>
+                    <h3 class="font-semibold text-lg mb-4">Тарифы</h3>
+                    <ul class="space-y-2">
+                        <li><a href="tariffs.html" class="text-gray-300 hover:text-white transition-colors">Часовые тарифы</a></li>
+                        <li><a href="tariffs.html" class="text-gray-300 hover:text-white transition-colors">Абонементы</a></li>
+                        <li><a class="text-gray-300 hover:text-white transition-colors">VIP-зона</a></li>
+                        <li><a class="text-gray-300 hover:text-white transition-colors">Доп. услуги</a></li>
+                    </ul>
+                </div>
+                
+                <div>
+                    <h3 class="font-semibold text-lg mb-4">Бронирование</h3>
+                    <ul class="space-y-2">
+                        <li><a href="booking.html" class="text-gray-300 hover:text-white transition-colors">Выбор зоны</a></li>
+                        <li><a href="booking.html" class="text-gray-300 hover:text-white transition-colors">Календарь</a></li>
+                        <li><a class="text-gray-300 hover:text-white transition-colors">Акции</a></li>
+                        <li><a class="text-gray-300 hover:text-white transition-colors">Подарочные карты</a></li>
+                    </ul>
+                </div>
+                
+                <div>
+                    <h3 class="font-semibold text-lg mb-4">Контакты</h3>
+                    <ul class="space-y-2">
+                        <li><a href="contacts.html" class="text-gray-300 hover:text-white transition-colors">Адрес клуба</a></li>
+                        <li><a class="text-gray-300 hover:text-white transition-colors">FAQ</a></li>
+                    </ul>
+                </div>
+                
+                <div>
+                    <h3 class="font-semibold text-lg mb-4">Свяжитесь с нами</h3>
+                    <div class="space-y-3">
+                        <div>
+                            <p class="text-gray-300">Телефон:</p>
+                            <a href="tel:+78005553535" class="text-white hover:text-blue-300 transition-colors font-medium">
+                                +7 (800) 555-35-35
+                            </a>
+                        </div>
+                        <div>
+                            <p class="text-gray-300">Email:</p>
+                            <a href="mailto:info@overzone.ru" class="text-white hover:text-blue-300 transition-colors font-medium">
+                                info@overzone.ru
+                            </a>
+                        </div>
+                        <div>
+                            <p class="text-gray-300">Часы работы:</p>
+                            <p class="text-white font-medium">Круглосуточно</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="border-t border-gray-700 pt-8">
+                <div class="flex flex-col md:flex-row justify-between items-center">
+                    <p class="text-gray-400 text-sm mb-4 md:mb-0">
+                        © 2024 OverZone PC Клуб. Все права защищены.
+                    </p>
+                    <div class="flex space-x-6">
+                        <a href="#" class="text-gray-400 hover:text-white transition-colors text-sm">Конфиденциальность</a>
+                        <a href="#" class="text-gray-400 hover:text-white transition-colors text-sm">Условия использования</a>
+                        <a href="#" class="text-gray-400 hover:text-white transition-colors text-sm">Правовая информация</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </footer>
+    
+    <script src="/Scripts/booking.js"></script>
+</body>
+</html>

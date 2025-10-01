@@ -109,7 +109,7 @@ document.addEventListener('DOMContentLoaded', function() {
         });
     });
     
-    // Инициализация карты (заглушка)
+   
     initializeMap();
 });
 
@@ -134,21 +134,21 @@ function initializeMap() {
 
 // Обработка кликов по телефонным номерам и email
 document.addEventListener('DOMContentLoaded', function() {
-    // Логирование кликов по контактам для аналитики
+    
     const phoneLinks = document.querySelectorAll('a[href^="tel:"]');
     const emailLinks = document.querySelectorAll('a[href^="mailto:"]');
     
     phoneLinks.forEach(link => {
         link.addEventListener('click', function() {
             console.log('Клик по телефону:', this.href);
-            // Можно добавить отправку события в аналитику
+            
         });
     });
     
     emailLinks.forEach(link => {
         link.addEventListener('click', function() {
             console.log('Клик по email:', this.href);
-            // Можно добавить отправку события в аналитику
+            
         });
     });
 });
