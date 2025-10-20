@@ -1,154 +1,203 @@
-// Инициализация Firebase
 const firebaseConfig = {
-    apiKey: "your-api-key",
-    authDomain: "your-auth-domain",
-    databaseURL: "your-database-url",
-    projectId: "your-project-id",
-    storageBucket: "your-storage-bucket",
-    messagingSenderId: "your-sender-id",
-    appId: "your-app-id"
+  apiKey: "AIzaSyBFG2Wfb8gizRA3A9UD0NNaWkqfUcPcs4Q",
+  authDomain: "overzonepc-webproject.firebaseapp.com",
+  databaseURL: "https://overzonepc-webproject-default-rtdb.europe-west1.firebasedatabase.app",
+  projectId: "overzonepc-webproject",
+  storageBucket: "overzonepc-webproject.firebasestorage.app",
+  messagingSenderId: "532963847440",
+  appId: "1:532963847440:web:ec496d0527fc25b14bc995",
+  measurementId: "G-JMMWCVHZBM"
 };
 
-// Инициализация Firebase
-firebase.initializeApp(firebaseConfig);
+const app = firebase.initializeApp(firebaseConfig);
+const analytics = firebase.analytics();
 const database = firebase.database();
 
-// Проверка авторизации пользователя
-firebase.auth().onAuthStateChanged((user) => {
-    if (user) {
-        // Пользователь авторизован
-        document.getElementById('login-btn').style.display = 'none';
-        document.getElementById('profile-menu').style.display = 'block';
+let balanceListener = null;
+
+document.addEventListener('DOMContentLoaded', function() {
+    checkAuthStatus();
+    setupProfileMenu();
+    setupMobileMenu();
+    displayUserBalance();
+    setupBalanceListener();
+});
+
+function checkAuthStatus() {
+    const userID = localStorage.getItem('userID');
+    const loginBtn = document.getElementById('login-btn');
+    const profileMenu = document.getElementById('profile-menu');
+    const userName = document.getElementById('user-name');
+    
+    if (userID){
+        loginBtn.classList.add('hidden');
+        profileMenu.classList.remove('hidden');
+
+        const userLogin = localStorage.getItem('userLogin');
+        if (userName && userLogin) {
+            userName.textContent = userLogin;
+        }
+
+        setupBalanceListener();
+    } else {
+        loginBtn.classList.remove('hidden');
+        profileMenu.classList.add('hidden');
+        stopBalanceListener();
+    }
+}
+
+function setupProfileMenu() {
+    const profileBtn = document.getElementById('profile-btn');
+    const dropdownMenu = document.getElementById('dropdown-menu');
+    
+    if (profileBtn && dropdownMenu) {
+        profileBtn.addEventListener('click', function() {
+            dropdownMenu.classList.toggle('hidden');
+        });
         
-        // Получение данных пользователя
-        const userRef = database.ref('users/' + user.uid);
-        userRef.once('value').then((snapshot) => {
-            const userData = snapshot.val();
-            if (userData) {
-                document.getElementById('user-name').textContent = userData.name || 'Пользователь';
-                document.getElementById('user-balance').textContent = userData.balance || '0';
+        document.addEventListener('click', function(event) {
+            if (!profileBtn.contains(event.target) && !dropdownMenu.contains(event.target)){
+                dropdownMenu.classList.add('hidden');
             }
         });
-    } else {
-        // Пользователь не авторизован
-        document.getElementById('login-btn').style.display = 'block';
-        document.getElementById('profile-menu').style.display = 'none';
     }
-});
-
-// Обработчик для кнопки профиля
-document.getElementById('profile-btn').addEventListener('click', function() {
-    const dropdown = document.getElementById('dropdown-menu');
-    dropdown.classList.toggle('hidden');
-});
-
-// Функция выхода
-function logout() {
-    firebase.auth().signOut().then(() => {
-        window.location.href = 'Main.html';
-    }).catch((error) => {
-        console.error('Ошибка при выходе:', error);
-    });
 }
 
-// Закрытие dropdown при клике вне его
-document.addEventListener('click', function(event) {
-    const dropdown = document.getElementById('dropdown-menu');
-    const profileBtn = document.getElementById('profile-btn');
+function setupMobileMenu() {
+    const mobileMenuButton = document.getElementById('mobile-menu-button');
+    const mobileMenu = document.getElementById('mobile-menu');
     
-    if (!profileBtn.contains(event.target) && !dropdown.contains(event.target)) {
-        dropdown.classList.add('hidden');
+    if (mobileMenuButton && mobileMenu) {
+        mobileMenuButton.addEventListener('click', function(event) {
+            event.stopPropagation();
+            mobileMenu.classList.toggle('hidden');
+            
+            const isOpen = !mobileMenu.classList.contains('hidden');
+            if (isOpen) {
+                mobileMenuButton.innerHTML = `
+                    <svg class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12" />
+                    </svg>
+                `;
+            } else {
+                mobileMenuButton.innerHTML = `
+                    <svg class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" d="M3.75 6.75h16.5M3.75 12h16.5m-16.5 5.25h16.5" />
+                    </svg>
+                `;
+            }
+        });
+        
+        document.addEventListener('click', function(event) {
+            if (!mobileMenu.contains(event.target) && !mobileMenuButton.contains(event.target)) {
+                mobileMenu.classList.add('hidden');
+                mobileMenuButton.innerHTML = `
+                    <svg class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" d="M3.75 6.75h16.5M3.75 12h16.5m-16.5 5.25h16.5" />
+                    </svg>
+                `;
+            }
+        });
+        
+        mobileMenu.querySelectorAll('a').forEach(link => {
+            link.addEventListener('click', function() {
+                mobileMenu.classList.add('hidden');
+                mobileMenuButton.innerHTML = `
+                    <svg class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" d="M3.75 6.75h16.5M3.75 12h16.5m-16.5 5.25h16.5" />
+                    </svg>
+                `;
+            });
+        });
+        
+        window.addEventListener('resize', function() {
+            if (window.innerWidth >= 768) {
+                mobileMenu.classList.add('hidden');
+                mobileMenuButton.innerHTML = `
+                    <svg class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" d="M3.75 6.75h16.5M3.75 12h16.5m-16.5 5.25h16.5" />
+                    </svg>
+                `;
+            }
+        });
     }
-});
+}
 
-// Анимация появления элементов при скролле
-const observerOptions = {
-    threshold: 0.1,
-    rootMargin: '0px 0px -50px 0px'
-};
+function displayUserBalance() {
+    const balanceElement = document.getElementById('user-balance');
+    if (balanceElement) {
+        const userBalance = localStorage.getItem('userBalance');
+        updateBalanceOnPage(userBalance);
+    }
+}
 
-const observer = new IntersectionObserver((entries) => {
-    entries.forEach(entry => {
-        if (entry.isIntersecting) {
-            entry.target.classList.add('animate-fade-in');
+function setupBalanceListener() {
+    const userID = localStorage.getItem('userID');
+    
+    if (!userID) {
+        console.log('Пользователь не найден!');
+        return;
+    }
+    
+    stopBalanceListener();
+    
+    const balanceRef = database.ref('Authorization/' + userID + '/Balance');
+    
+    balanceListener = balanceRef.on('value', (snapshot) => {
+        const newBalance = snapshot.val();
+        
+        if (newBalance !== null) {
+            updateBalanceOnPage(newBalance);
+            localStorage.setItem('userBalance', newBalance.toString());
         }
+    }, (error) => {
+        console.error('Ошибка просмотра баланса:', error);
     });
-}, observerOptions);
-
-// Наблюдаем за всеми секциями
-document.querySelectorAll('section').forEach(section => {
-    observer.observe(section);
-});
-
-// Добавляем CSS для анимации
-const style = document.createElement('style');
-style.textContent = `
-    @keyframes fadeIn {
-        from { opacity: 0; transform: translateY(20px); }
-        to { opacity: 1; transform: translateY(0); }
-    }
-    
-    .animate-fade-in {
-        animation: fadeIn 0.6s ease-out forwards;
-    }
-    
-    section {
-        opacity: 0;
-    }
-`;
-document.head.appendChild(style);
-
-// Функционал для FAQ
-document.addEventListener('DOMContentLoaded', function() {
-    const faqItems = document.querySelectorAll('.bg-gray-800');
-    
-    faqItems.forEach(item => {
-        item.addEventListener('click', function() {
-            // Здесь можно добавить функционал раскрытия/скрытия ответов
-            this.classList.toggle('active');
-        });
-    });
-    
-   
-    initializeMap();
-});
-
-function initializeMap() {
-    // Здесь будет инициализация карты (Google Maps, Yandex Maps и т.д.)
-    console.log('Инициализация карты...');
-    
-    // Пример для Google Maps:
-    /*
-    const map = new google.maps.Map(document.getElementById('map'), {
-        center: { lat: 55.7558, lng: 37.6173 },
-        zoom: 15
-    });
-    
-    const marker = new google.maps.Marker({
-        position: { lat: 55.7558, lng: 37.6173 },
-        map: map,
-        title: 'OverZone PC Клуб'
-    });
-    */
 }
 
-// Обработка кликов по телефонным номерам и email
-document.addEventListener('DOMContentLoaded', function() {
-    
-    const phoneLinks = document.querySelectorAll('a[href^="tel:"]');
-    const emailLinks = document.querySelectorAll('a[href^="mailto:"]');
-    
-    phoneLinks.forEach(link => {
-        link.addEventListener('click', function() {
-            console.log('Клик по телефону:', this.href);
-            
-        });
+function stopBalanceListener() {
+    if (balanceListener) {
+        const balanceRef = database.ref('Authorization/' + localStorage.getItem('userID') + '/Balance');
+        balanceRef.off('value', balanceListener);
+        balanceListener = null;
+    }
+}
+
+function updateBalanceOnPage(balance) {
+    const balanceElement = document.getElementById('user-balance');
+    if (balanceElement) {
+        if (balance !== null && balance !== undefined) {
+            balanceElement.textContent = parseFloat(balance).toFixed(2);
+        } else {
+            balanceElement.textContent = '0.00';
+        }
+    }
+}
+
+function logout() {
+    localStorage.removeItem('userID');
+    localStorage.removeItem('userLogin');
+    localStorage.removeItem('userEmail');
+    localStorage.removeItem('userRole');
+    localStorage.removeItem('userBalance');
+    localStorage.removeItem('userDateB');
+    localStorage.removeItem('userName');
+    localStorage.removeItem('userSurname');
+
+    Swal.fire({
+        icon: 'success',
+        title: 'Выход выполнен!',
+        text: 'Вы успешно вышли из аккаунта',
+        timer: 2000,
+        showConfirmButton: false
+    }).then(() => {
+        window.location.reload();
     });
-    
-    emailLinks.forEach(link => {
-        link.addEventListener('click', function() {
-            console.log('Клик по email:', this.href);
-            
-        });
-    });
+}
+
+window.addEventListener('beforeunload', function() {
+    stopBalanceListener();
 });
+
+window.logout = logout;
+window.updateBalanceOnPage = updateBalanceOnPage;

@@ -35,6 +35,21 @@
                     <a href="contacts.html" class="hover:text-blue-400 transition-colors">Контакты</a>
                 </nav>
 
+                <div class="md:hidden flex items-center">
+                    <button id="mobile-menu-button" class="p-2 rounded-md text-gray-400 hover:text-white hover:bg-gray-700 focus:outline-none focus:ring-2 focus:ring-inset focus:ring-white min-h-[44px] min-w-[44px] flex items-center justify-center">
+                        <svg class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor">
+                            <path stroke-linecap="round" stroke-linejoin="round" d="M3.75 6.75h16.5M3.75 12h16.5m-16.5 5.25h16.5" />
+                        </svg>
+                    </button>
+    
+                    <div id="mobile-menu" class="hidden absolute top-16 left-0 w-full bg-gray-900 shadow-lg py-2 z-50 border-t border-gray-700">
+                        <a href="about.html" class="block px-6 py-3 text-base hover:bg-gray-800 border-b border-gray-700 transition-colors">О клубе</a>
+                        <a href="tariffs.html" class="block px-6 py-3 text-base hover:bg-gray-800 border-b border-gray-700 transition-colors">Тарифы</a>
+                        <a href="booking.html" class="block px-6 py-3 text-base hover:bg-gray-800 border-b border-gray-700 transition-colors">Бронирование</a>
+                        <a href="contacts.html" class="block px-6 py-3 text-base hover:bg-gray-800 transition-colors">Контакты</a>
+                    </div>
+                </div>
+
                 <div id="auth-buttons">
                     
                     <a href="Login.html" id="login-btn" class="bg-blue-600 hover:bg-blue-700 px-4 py-2 rounded-md transition-colors">
