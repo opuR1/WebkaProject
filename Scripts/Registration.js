@@ -79,7 +79,7 @@ document.getElementById('registration-form').addEventListener('submit', function
                         title: "Успех!",
                         text: "Регистрация завершена. Теперь вы можете войти.",
                 }).then(() => {
-                    window.location.href = "/HTML/Login.html";
+                    window.location.href = "Login.html";
                 });
             });
         }

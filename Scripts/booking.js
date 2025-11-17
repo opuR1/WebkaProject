@@ -588,7 +588,7 @@ function logout() {
     localStorage.removeItem('userLogin');
     localStorage.removeItem('userBalance');
     stopBalanceListener();
-    window.location.href = 'Main.html';
+    window.location.href = 'index.html';
 }
 
 function setupMobileMenu() {

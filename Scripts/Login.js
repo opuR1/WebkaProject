@@ -52,10 +52,10 @@ async function loginUser(event) {
 
             switch(user.ID_Post.toString()) {
                 case "1": //Admin
-                window.location.href = "/HTML/Main.html";
+                window.location.href = "index.html";
                 break;
                 case "2": //User
-                window.location.href = "/HTML/Main.html";
+                window.location.href = "index.html";
                 break;
                 default:
                     console.error("Ошибка роли!", user.ID_Post);
